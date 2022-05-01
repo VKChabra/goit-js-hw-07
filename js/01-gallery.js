@@ -4,8 +4,8 @@ import { galleryItems } from './gallery-items.js';
 
 const gallery = document.querySelector(".gallery")
 
-const makeGalleryItems = element => {
-    const { preview, original, description } = element;
+const makeGalleryItems = e => {
+    const { preview, original, description } = e;
 
     return `
     <div class="gallery__item">
@@ -24,16 +24,20 @@ const galleryItemsList = galleryItems.map(makeGalleryItems).join('')
 
 gallery.insertAdjacentHTML("beforeend", galleryItemsList)
 
-const instance = basicLightbox.create(`<img class='gallery__modal-img' src=''>`,
+function showImgOrig(link) {
+    const escButtonCloseInstance = e => {
+        if (e.key === 'Escape') {
+        instance.close();
+        }
+    }
+    
+    const instance = basicLightbox.create(`<img class='gallery__modal-img' src=${link}>`,
     {
         onShow: () => document.addEventListener('keydown', escButtonCloseInstance),
-    },
-);
+        onClose: () => document.removeEventListener('keydown', escButtonCloseInstance),
+    },);
 
-const escButtonCloseInstance = e => {
-    if (e.key === 'Escape') {
-      instance.close();
-    }
+    instance.show();
 }
 
 const openGalleryModal = e => {
@@ -41,8 +45,10 @@ const openGalleryModal = e => {
     if (e.target.nodeName !== 'IMG') {
         return
     }
-    instance.element().querySelector('.gallery__modal-img').src = e.target.dataset.source;
-    instance.show();
+    
+    // instance.element().querySelector('.gallery__modal-img').src = e.target.dataset.source;
+    
+    showImgOrig(e.target.dataset.source);
 };
 
 gallery.addEventListener("click", openGalleryModal);

@@ -4,10 +4,11 @@ import { galleryItems } from './gallery-items.js';
 
 const gallery = document.querySelector(".gallery")
 
-const makeGalleryItems = element => {
-    const { preview, original, description } = element;
+const makeGalleryItems = e => {
+    const { preview, original, description } = e;
 
     return `
+    <li style="display: contents;">
         <a class="gallery__item" href="${original}">
             <img
             class="gallery__image"
@@ -15,19 +16,15 @@ const makeGalleryItems = element => {
             data-source="${original}"
             alt="${description}"
             />
-        </a>`;
+        </a>
+    </li>`;
 };
 
 const galleryItemsList = galleryItems.map(makeGalleryItems).join('')
 
 gallery.insertAdjacentHTML("beforeend", galleryItemsList)
 
-const lightbox = new SimpleLightbox('.gallery a', {
+const lightbox = new SimpleLightbox('.gallery .gallery__item', {
     close: true,
-    captions: true,
     captionsData: 'alt',
-    captionDelay: '250',
-    captionPosition: 'bottom',
-    showCounter: true,
-    doubleTapZoom: 2,
 });
